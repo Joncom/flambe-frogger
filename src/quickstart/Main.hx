@@ -7,6 +7,9 @@ import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
 
+import flambe.swf.Library;
+import flambe.swf.MovieSprite;
+
 import flambe.display.Font;
 import flambe.display.TextSprite;
 import flambe.input.PointerEvent;
@@ -54,6 +57,14 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        var lib = new Library(pack, "frog");
+        var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
+        frogIdle.x._ = 256;
+        frogIdle.y._ = 256;
+        System.root.addChild(new Entity().add(frogIdle));
+
+        return;
+
         // Store the asset pack for use later on
         assetPack = pack;
         // Grab the font from the asset pack for use later on
