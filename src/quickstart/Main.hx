@@ -20,6 +20,8 @@ import haxe.Timer;
 
 class Main
 {
+    private static var frog:Entity;
+
     // Constants
     private static inline var GAME_TIME:Int = 10;
 
@@ -59,11 +61,16 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        frog = new Entity();
         var lib = new Library(pack, "frog");
+
         var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
         frogIdle.x._ = 256;
         frogIdle.y._ = 256;
-        System.root.addChild(new Entity().add(frogIdle));
+        frog.add(frogIdle);
+        System.root.addChild(frog);
+
+        var frogHop:MovieSprite = lib.createMovie("Frog.Hop", true);
 
         System.keyboard.down.connect(function(event:KeyboardEvent) {
             if(event.key == Key.Down) {
@@ -75,6 +82,15 @@ class Main
             } else if(event.key == Key.Right) {
                 frogIdle.x._ += 10;
             }
+            frog.remove(frogIdle);
+            frog.add(frogHop);
+            frogHop.x._ = frogIdle.x._;
+            frogHop.y._ = frogIdle.y._;
+            frogHop.looped.connect(function() {
+                trace("Done hop");
+                frog.remove(frogHop);
+                frog.add(frogIdle);
+            }).once();
         });
 
         return;
