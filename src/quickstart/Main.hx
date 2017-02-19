@@ -64,6 +64,16 @@ class Main
         }
         System.root.addChild(grass);
 
+        var y = 0;
+        for(name in ["celica", "civic", "semi", "taxi", "viper"]) {
+            var car = new ImageSprite(pack.getTexture("car-" + name));
+            car.x._ = 256;
+            car.y._ = y;
+            car.rotation._ = 90;
+            System.root.addChild(new Entity().add(car));
+            y += TILESIZE;
+        }        
+
         frog = new Entity();
         var lib = new Library(pack, "frog");
 
