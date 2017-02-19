@@ -95,9 +95,21 @@ class Main
                     // Swap in new animation
                     frogHop.x._ = frogIdle.x._;
                     frogHop.y._ = frogIdle.y._;
+                    frogHop.rotation._ = frogIdle.rotation._;
                     frog.remove(frogIdle);
                     frog.add(frogHop);
                     frogSprite = frogHop;
+
+                    // Set rotation
+                    if(moveX > 0) {
+                        frogSprite.rotation._ = 90;
+                    } else if(moveX < 0) {
+                        frogSprite.rotation._ = -90;
+                    } else if(moveY > 0) {
+                        frogSprite.rotation._ = 180;
+                    } else if(moveY < 0) {
+                        frogSprite.rotation._ = 0;
+                    }
 
                     // Move
                     if(moveX != 0) {
@@ -111,6 +123,7 @@ class Main
                         // Restore idle animation
                         frogIdle.x._ = frogHop.x._;
                         frogIdle.y._ = frogHop.y._;
+                        frogIdle.rotation._ = frogHop.rotation._;
                         frog.remove(frogHop);
                         frog.add(frogIdle);
                         frogSprite = frogIdle;
