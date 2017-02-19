@@ -1,5 +1,5 @@
 /build/
-
+*.swf
 .*.swp
 ._*
 .DS_Store
