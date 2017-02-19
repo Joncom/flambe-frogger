@@ -9,6 +9,8 @@ import flambe.display.ImageSprite;
 
 import flambe.swf.Library;
 import flambe.swf.MovieSprite;
+import flambe.input.KeyboardEvent;
+import flambe.input.Key;
 
 import flambe.display.Font;
 import flambe.display.TextSprite;
@@ -62,6 +64,18 @@ class Main
         frogIdle.x._ = 256;
         frogIdle.y._ = 256;
         System.root.addChild(new Entity().add(frogIdle));
+
+        System.keyboard.down.connect(function(event:KeyboardEvent) {
+            if(event.key == Key.Down) {
+                frogIdle.y._ += 10;
+            } else if(event.key == Key.Up) {
+                frogIdle.y._ -= 10;
+            } else if(event.key == Key.Left) {
+                frogIdle.x._ -= 10;
+            } else if(event.key == Key.Right) {
+                frogIdle.x._ += 10;
+            }
+        });
 
         return;
 
