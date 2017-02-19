@@ -14,8 +14,16 @@ import flambe.input.Key;
 
 class Main
 {
+    // Constants
+    private static inline var TILE_WIDTH:Int = 14;
+    private static inline var TILE_HEIGHT:Int = 7;
+    private static inline var TILESIZE:Int = 32;
+
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
+
+    private static var road:Entity;
+    private static var grass:Entity;
 
     private static function main ()
     {
@@ -30,6 +38,28 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        road = new Entity();
+        for(y in 1...(TILE_HEIGHT - 1)) {
+            for(x in 0...TILE_WIDTH) {
+                var tile = new ImageSprite(pack.getTexture("road-tile"));
+                tile.x._ = x * TILESIZE;
+                tile.y._ = y * TILESIZE;
+                road.addChild(new Entity().add(tile));
+            }
+        }
+        System.root.addChild(road);
+
+        grass = new Entity();
+        for(y in [0,TILE_HEIGHT-1]) {
+            for(x in 0...TILE_WIDTH) {
+                var tile = new ImageSprite(pack.getTexture("grass-tile"));
+                tile.x._ = x * TILESIZE;
+                tile.y._ = y * TILESIZE;
+                grass.addChild(new Entity().add(tile));
+            }
+        }
+        System.root.addChild(grass);
+
         frog = new Entity();
         var lib = new Library(pack, "frog");
 
