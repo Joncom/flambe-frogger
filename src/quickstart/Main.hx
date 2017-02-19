@@ -86,7 +86,7 @@ class Main
                 var name = carNames[Math.floor(Math.random() * carNames.length)];
                 var car = new Entity();
                 var sprite = new ImageSprite(pack.getTexture("car-" + name));
-                sprite.x._ = 0;
+                sprite.x._ = -sprite.getNaturalWidth();
                 sprite.y._ = y;
                 car.add(sprite);
                 cars.push(car);
