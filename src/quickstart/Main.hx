@@ -21,6 +21,7 @@ import haxe.Timer;
 class Main
 {
     private static var frog:Entity;
+    private static var frogSprite:MovieSprite;
 
     // Constants
     private static inline var GAME_TIME:Int = 10;
@@ -65,32 +66,57 @@ class Main
         var lib = new Library(pack, "frog");
 
         var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
-        frogIdle.x._ = 256;
-        frogIdle.y._ = 256;
-        frog.add(frogIdle);
-        System.root.addChild(frog);
-
         var frogHop:MovieSprite = lib.createMovie("Frog.Hop", true);
 
+        frogSprite = frogIdle;
+        frogSprite.x._ = 256;
+        frogSprite.y._ = 256;
+
+        frog.add(frogSprite);
+        System.root.addChild(frog);
+
         System.keyboard.down.connect(function(event:KeyboardEvent) {
+            var moveX = 0;
+            var moveY = 0;
+            var tilesize = 200;
             if(event.key == Key.Down) {
-                frogIdle.y._ += 10;
+                moveY = tilesize;
             } else if(event.key == Key.Up) {
-                frogIdle.y._ -= 10;
+                moveY = -tilesize;
             } else if(event.key == Key.Left) {
-                frogIdle.x._ -= 10;
+                moveX = -tilesize;
             } else if(event.key == Key.Right) {
-                frogIdle.x._ += 10;
+                moveX = tilesize;
             }
-            frog.remove(frogIdle);
-            frog.add(frogHop);
-            frogHop.x._ = frogIdle.x._;
-            frogHop.y._ = frogIdle.y._;
-            frogHop.looped.connect(function() {
-                trace("Done hop");
-                frog.remove(frogHop);
-                frog.add(frogIdle);
-            }).once();
+            // Can move?
+            if(frogSprite == frogIdle) {
+                // Trying to move?
+                if(moveX != 0 || moveY != 0) {
+                    // Swap in new animation
+                    frogHop.x._ = frogIdle.x._;
+                    frogHop.y._ = frogIdle.y._;
+                    frog.remove(frogIdle);
+                    frog.add(frogHop);
+                    frogSprite = frogHop;
+
+                    // Move
+                    if(moveX != 0) {
+                        frogHop.x.animateTo(frogHop.x._ + moveX, 0.25);    
+                    }
+                    if(moveY != 0) {
+                        frogHop.y.animateTo(frogHop.y._ + moveY, 0.25);
+                    }
+
+                    frogHop.looped.connect(function() {
+                        // Restore idle animation
+                        frogIdle.x._ = frogHop.x._;
+                        frogIdle.y._ = frogHop.y._;
+                        frog.remove(frogHop);
+                        frog.add(frogIdle);
+                        frogSprite = frogIdle;
+                    }).once();
+                }
+            }
         });
 
         return;
