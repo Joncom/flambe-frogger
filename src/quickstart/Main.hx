@@ -17,7 +17,7 @@ class Main
     // Constants
     private static inline var TILE_WIDTH:Int = 14;
     private static inline var TILE_HEIGHT:Int = 7;
-    private static inline var TILESIZE:Int = 32;
+    private static inline var TILESIZE:Int = 64;
 
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
@@ -55,6 +55,8 @@ class Main
                 var tile = new ImageSprite(pack.getTexture("grass-tile"));
                 tile.x._ = x * TILESIZE;
                 tile.y._ = y * TILESIZE;
+                tile.scaleX._ = 2;
+                tile.scaleY._ = 2;
                 grass.addChild(new Entity().add(tile));
             }
         }
@@ -76,15 +78,14 @@ class Main
         System.keyboard.down.connect(function(event:KeyboardEvent) {
             var moveX = 0;
             var moveY = 0;
-            var tilesize = 200;
             if(event.key == Key.Down) {
-                moveY = tilesize;
+                moveY = TILESIZE;
             } else if(event.key == Key.Up) {
-                moveY = -tilesize;
+                moveY = -TILESIZE;
             } else if(event.key == Key.Left) {
-                moveX = -tilesize;
+                moveX = -TILESIZE;
             } else if(event.key == Key.Right) {
-                moveX = tilesize;
+                moveX = TILESIZE;
             }
             // Can move?
             if(frogSprite == frogIdle) {
