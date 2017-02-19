@@ -38,6 +38,7 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        // Construct road
         road = new Entity();
         for(y in 1...(TILE_HEIGHT - 1)) {
             for(x in 0...TILE_WIDTH) {
@@ -49,6 +50,7 @@ class Main
         }
         System.root.addChild(road);
 
+        // Construct grass
         grass = new Entity();
         for(y in [0,TILE_HEIGHT-1]) {
             for(x in 0...TILE_WIDTH) {
