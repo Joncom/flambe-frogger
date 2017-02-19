@@ -112,10 +112,10 @@ class Main
 
                     // Move
                     if(moveX != 0) {
-                        frogHop.x.animateTo(frogHop.x._ + moveX, 0.25);    
+                        frogHop.x.animateTo(frogHop.x._ + moveX, frogHop.symbol.duration);    
                     }
                     if(moveY != 0) {
-                        frogHop.y.animateTo(frogHop.y._ + moveY, 0.25);
+                        frogHop.y.animateTo(frogHop.y._ + moveY, frogHop.symbol.duration);
                     }
 
                     frogHop.looped.connect(function() {
