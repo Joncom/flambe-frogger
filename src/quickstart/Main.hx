@@ -12,11 +12,13 @@ import flambe.swf.MovieSprite;
 import flambe.input.KeyboardEvent;
 import flambe.input.Key;
 
+import haxe.Timer;
+
 class Main
 {
     // Constants
-    private static inline var TILE_WIDTH:Int = 14;
-    private static inline var TILE_HEIGHT:Int = 7;
+    private static inline var LANE_COUNT:Int = 5;
+    private static inline var LANE_WIDTH:Int = 14;
     private static inline var TILESIZE:Int = 64;
 
     private static var frog:Entity;
@@ -24,6 +26,11 @@ class Main
 
     private static var road:Entity;
     private static var grass:Entity;
+
+    private static var carTimer:Timer;
+
+    private static var carNames = ["celica", "civic", "semi", "taxi", "viper"];
+    private static var lanes;
 
     private static function main ()
     {
@@ -40,8 +47,8 @@ class Main
     {
         // Construct road
         road = new Entity();
-        for(y in 1...(TILE_HEIGHT - 1)) {
-            for(x in 0...TILE_WIDTH) {
+        for(y in 1...LANE_COUNT+1) {
+            for(x in 0...LANE_WIDTH) {
                 var tile = new ImageSprite(pack.getTexture("road-tile"));
                 tile.x._ = x * TILESIZE;
                 tile.y._ = y * TILESIZE;
@@ -52,8 +59,8 @@ class Main
 
         // Construct grass
         grass = new Entity();
-        for(y in [0,TILE_HEIGHT-1]) {
-            for(x in 0...TILE_WIDTH) {
+        for(y in [0,LANE_COUNT+1]) {
+            for(x in 0...LANE_WIDTH) {
                 var tile = new ImageSprite(pack.getTexture("grass-tile"));
                 tile.x._ = x * TILESIZE;
                 tile.y._ = y * TILESIZE;
@@ -64,15 +71,35 @@ class Main
         }
         System.root.addChild(grass);
 
+        lanes = [];
+        for(lane in 0...LANE_COUNT) {
+            lanes[lane] = [];
+        }
         var y = 0;
-        for(name in ["celica", "civic", "semi", "taxi", "viper"]) {
-            var car = new ImageSprite(pack.getTexture("car-" + name));
-            car.x._ = 256;
-            car.y._ = y;
-            car.rotation._ = 90;
-            System.root.addChild(new Entity().add(car));
-            y += TILESIZE;
-        }        
+        for(name in carNames) {
+            
+        }
+
+        // Create and start the game timer
+        carTimer = new Timer(16);
+        carTimer.run = function() {
+            var y = TILESIZE;
+            for(cars in lanes) {
+                if(cars.length == 0) {
+                    var name = carNames[Math.floor(Math.random() * carNames.length)];
+                    var car = new ImageSprite(pack.getTexture("car-" + name));
+                    car.x._ = 256;
+                    car.y._ = y;
+                    car.rotation._ = 90;
+                    cars.push(car);
+                    System.root.addChild(new Entity().add(car));
+                }
+                for(car in cars) {
+                    car.x._ -= 10;
+                }
+                y += TILESIZE;                
+            }
+        };
 
         frog = new Entity();
         var lib = new Library(pack, "frog");
