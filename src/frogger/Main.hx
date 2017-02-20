@@ -114,6 +114,13 @@ class Main
                     i--;
                 }
             }
+
+            // Checker for collision against frog
+            for(car in cars) {
+                if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
+                    trace('hit');
+                }
+            }
         };
 
         frog = new Entity();
