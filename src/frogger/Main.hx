@@ -105,8 +105,8 @@ class Main
                 while(i >= 0) {
                     var sprite = cars[i].entity.get(ImageSprite);
                     if(
-                        (cars[i].direction == 'RIGHT' && sprite.x._ >= LANE_WIDTH * TILESIZE) ||
-                        (cars[i].direction == 'LEFT' && sprite.x._ <= -sprite.getNaturalWidth())
+                        (cars[i].direction == 'RIGHT' && sprite.x._ - sprite.getNaturalWidth()/2 >= LANE_WIDTH * TILESIZE) ||
+                        (cars[i].direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth()/2 <= -sprite.getNaturalWidth())
                     ) {
                         System.root.removeChild(cars[i].entity);
                         cars.splice(i, 1);
@@ -201,8 +201,8 @@ class Main
         var car = new Car();
         var sprite = car.entity.get(ImageSprite);
 
-        sprite.x._ = (lane % 2 == 0 ? -sprite.getNaturalWidth() : LANE_WIDTH * TILESIZE);
-        sprite.x.animateTo((lane % 2 == 0 ? LANE_WIDTH * TILESIZE : -sprite.getNaturalWidth()), 4);
+        sprite.x._ = (lane % 2 == 0 ? -sprite.getNaturalWidth()/2 : LANE_WIDTH * TILESIZE + sprite.getNaturalWidth()/2);
+        sprite.x.animateTo((lane % 2 == 0 ? LANE_WIDTH * TILESIZE + sprite.getNaturalWidth()/2 : -sprite.getNaturalWidth()/2), 16);
         sprite.rotation._ = (lane % 2 == 0 ? 0 : 180);
         sprite.y._ = TILESIZE * 1.5 + TILESIZE * lane;
         
