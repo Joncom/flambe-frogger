@@ -14,7 +14,7 @@ id: com.yourdomain.yourgame
 version: 1.0.0
 
 # The main class name.
-main: quickstart.Main
+main: frogger.Main
 
 # The platform to use when invoking `run` or `build` with no arguments.
 default_platform: flash

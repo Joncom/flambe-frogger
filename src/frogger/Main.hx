@@ -1,4 +1,4 @@
-package quickstart;
+package frogger;
 
 import flambe.Entity;
 import flambe.System;
