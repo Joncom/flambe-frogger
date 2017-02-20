@@ -246,6 +246,8 @@ class Main
                     frog.add(frogKilled);
                     frogSprite = frogKilled;
 
+                    pack.getSound("hit").play();
+
                     // Play death animation and then pause at the end
                     frogKilled.position = 0;
                     frogKilled.onUpdate(0);
