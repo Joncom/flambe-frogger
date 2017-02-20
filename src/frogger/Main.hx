@@ -189,7 +189,7 @@ class Main
         sprite.x.animateTo(LANE_WIDTH * TILESIZE, 2);
         
         car.lane = lane;
-        car.gap = 100;
+        car.gap = Math.floor(Math.random() * 200 + 100);
         car.nextCarSpawned = false;
         
         cars.push(car);
