@@ -17,8 +17,6 @@ import flambe.swf.MovieSprite;
 import flambe.input.KeyboardEvent;
 import flambe.input.Key;
 
-import haxe.Timer;
-
 class Main
 {
     // Constants
@@ -35,8 +33,6 @@ class Main
 
     private static var road:Entity;
     private static var grass:Entity;
-
-    private static var carTimer:Timer;
 
     private static var baseCarSpeed:Int = 25;
     private static var laneSpeedFactor:Array<Int> = [4, 3, 6, 2, 5];
@@ -94,27 +90,6 @@ class Main
         for(lane in 0...LANE_COUNT) {
             addCar(lane);
         }
-
-        // Create and start the game timer
-        carTimer = new Timer(16);
-        carTimer.run = function() {
-
-            // Remove old cars
-            if(cars.length > 0) {
-                var i = cars.length - 1;
-                while(i >= 0) {
-                    var sprite = cars[i].entity.get(ImageSprite);
-                    if(
-                        (cars[i].direction == 'RIGHT' && sprite.x._ - sprite.getNaturalWidth()/2 >= LANE_WIDTH * TILESIZE) ||
-                        (cars[i].direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth()/2 <= -sprite.getNaturalWidth())
-                    ) {
-                        System.root.removeChild(cars[i].entity);
-                        cars.splice(i, 1);
-                    }
-                    i--;
-                }
-            }
-        };
 
         // Setup main update loop
         var script:Script = new Script();
@@ -212,6 +187,22 @@ class Main
         var now = Date.now().getTime();
         var dt = (now - lastFrame)/1000;
         lastFrame = now;
+
+        // Remove old cars
+        if(cars.length > 0) {
+            var i = cars.length - 1;
+            while(i >= 0) {
+                var sprite = cars[i].entity.get(ImageSprite);
+                if(
+                    (cars[i].direction == 'RIGHT' && sprite.x._ - sprite.getNaturalWidth()/2 >= LANE_WIDTH * TILESIZE) ||
+                    (cars[i].direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth()/2 <= -sprite.getNaturalWidth())
+                ) {
+                    System.root.removeChild(cars[i].entity);
+                    cars.splice(i, 1);
+                }
+                i--;
+            }
+        }
 
         // Spawn new cars
         var y = TILESIZE;
