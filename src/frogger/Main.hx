@@ -98,22 +98,6 @@ class Main
         // Create and start the game timer
         carTimer = new Timer(16);
         carTimer.run = function() {
-            var y = TILESIZE;
-
-            // Spawn new cars
-            for(i in 0...cars.length) {
-                var car = cars[i];
-                if(!car.nextCarSpawned) {
-                    var sprite = car.entity.get(ImageSprite);
-                    if(
-                        (car.direction == 'RIGHT' && sprite.x._ >= car.gap) || 
-                        (car.direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth() <= LANE_WIDTH * TILESIZE - car.gap)
-                    ) {
-                        addCar(car.lane);
-                        car.nextCarSpawned = true;
-                    }
-                }
-            }
 
             // Remove old cars
             if(cars.length > 0) {
@@ -228,6 +212,22 @@ class Main
         var now = Date.now().getTime();
         var dt = (now - lastFrame)/1000;
         lastFrame = now;
+
+        // Spawn new cars
+        var y = TILESIZE;
+        for(i in 0...cars.length) {
+            var car = cars[i];
+            if(!car.nextCarSpawned) {
+                var sprite = car.entity.get(ImageSprite);
+                if(
+                    (car.direction == 'RIGHT' && sprite.x._ >= car.gap) || 
+                    (car.direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth() <= LANE_WIDTH * TILESIZE - car.gap)
+                ) {
+                    addCar(car.lane);
+                    car.nextCarSpawned = true;
+                }
+            }
+        }
 
         // Move cars
         for(car in cars) {
