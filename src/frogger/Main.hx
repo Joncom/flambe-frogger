@@ -17,7 +17,7 @@ import haxe.Timer;
 class Main
 {
     // Constants
-    private static inline var LANE_COUNT:Int = 2;
+    private static inline var LANE_COUNT:Int = 5;
     private static inline var LANE_WIDTH:Int = 14;
     private static inline var TILESIZE:Int = 64;
 
