@@ -78,11 +78,13 @@ class Main
 
             // Remove old cars
             if(cars.length > 0) {
-                for(i in cars.length-1...0) {
+                var i = cars.length - 1;
+                while(i >= 0) {
                     if(cars[i].get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
                         System.root.removeChild(cars[i]);
                         cars.splice(i, 1);
                     }
+                    i--;
                 }
             }
 
