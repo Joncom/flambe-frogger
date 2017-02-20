@@ -186,7 +186,7 @@ class Main
 
         sprite.x._ = -sprite.getNaturalWidth();
         sprite.y._ = TILESIZE + TILESIZE * lane;
-        sprite.x.animateTo(LANE_WIDTH * TILESIZE, 2);
+        sprite.x.animateTo(LANE_WIDTH * TILESIZE, 4);
         
         car.lane = lane;
         car.gap = Math.floor(Math.random() * 200 + 100);
