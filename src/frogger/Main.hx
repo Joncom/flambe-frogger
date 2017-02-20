@@ -29,6 +29,10 @@ class Main
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
 
+    private static var frogIdle:MovieSprite;
+    private static var frogHop:MovieSprite;
+    private static var frogKilled:MovieSprite;
+
     private static var road:Entity;
     private static var grass:Entity;
 
@@ -129,10 +133,11 @@ class Main
         frog = new Entity();
 
         var lib = new Library(pack, "frog");
-        var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
-        var frogHop:MovieSprite = lib.createMovie("Frog.Hop", true);
+        frogIdle = lib.createMovie("Frog.Idle", true);
+        frogHop = lib.createMovie("Frog.Hop", true);
+        frogKilled = lib.createMovie("Frog.Killed", true);
         
-        for(sprite in [frogIdle, frogHop]) {
+        for(sprite in [frogIdle, frogHop, frogKilled]) {
             sprite.scaleX._ = 0.5;
             sprite.scaleY._ = 0.5;
         }
@@ -210,10 +215,28 @@ class Main
     }
 
     private static function update() {
-        for(car in cars) {
-            if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
-                trace('hit');
-                break;
+        // Kill frog when he collides with car
+        if(frogSprite != frogKilled) {
+            for(car in cars) {
+                if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
+                    frogKilled.x._ = frogSprite.x._;
+                    frogKilled.y._ = frogSprite.y._;
+                    frogKilled.rotation._ = frogSprite.rotation._;
+                    frog.remove(frogSprite);
+                    frog.add(frogKilled);
+                    frogSprite = frogKilled;
+
+                    // Play death animation and then pause at the end
+                    frogKilled.position = 0;
+                    frogKilled.onUpdate(0);
+                    frogKilled.paused = false;
+                    frogKilled.looped.connect(function() {
+                        frogKilled.position = frogKilled.symbol.duration;
+                        frogKilled.onUpdate(0);
+                        frogKilled.paused = true;
+                    }).once();
+                    break;
+                }
             }
         }
     }
