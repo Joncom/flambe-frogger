@@ -77,10 +77,12 @@ class Main
             var y = TILESIZE;
 
             // Remove old cars
-            for(i in cars.length-1...0) {
-                if(cars[i].get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
-                    System.root.removeChild(cars[i]);
-                    cars.splice(i, 1);
+            if(cars.length > 0) {
+                for(i in cars.length-1...0) {
+                    if(cars[i].get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
+                        System.root.removeChild(cars[i]);
+                        cars.splice(i, 1);
+                    }
                 }
             }
 
