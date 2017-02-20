@@ -87,11 +87,6 @@ class Main
         }
         System.root.addChild(grass);
 
-        // Add one car to each lane
-        for(lane in 0...LANE_COUNT) {
-            addCar(lane);
-        }
-
         // Setup main update loop
         var script:Script = new Script();
         script.run(new Repeat(new CallFunction(update), -1));
@@ -181,6 +176,11 @@ class Main
                 }
             }
         });
+
+        // Add one car to each lane
+        for(lane in 0...LANE_COUNT) {
+            addCar(lane);
+        }
     }
 
     private static function update() {
