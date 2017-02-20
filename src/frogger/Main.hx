@@ -77,7 +77,7 @@ class Main
             var y = TILESIZE;
 
             // Remove old cars
-            while(cars.length > 0 && cars[0].get(ImageSprite).x._ > LANE_WIDTH * TILESIZE) {
+            while(cars.length > 0 && cars[0].get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
                 System.root.removeChild(cars[0]);
                 cars.shift();                    
             }
@@ -88,14 +88,11 @@ class Main
                 var sprite = new ImageSprite(pack.getTexture("car-" + name));
                 sprite.x._ = -sprite.getNaturalWidth();
                 sprite.y._ = y;
+                sprite.x.animateTo(LANE_WIDTH * TILESIZE, 1);
                 car.add(sprite);
                 cars.push(car);
                 System.root.addChild(car);
             }
-
-            for(car in cars) {
-                car.get(ImageSprite).x._ += 10;
-            }         
         };
 
         frog = new Entity();
