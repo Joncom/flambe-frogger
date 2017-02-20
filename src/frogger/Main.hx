@@ -239,6 +239,10 @@ class Main
 
                     pack.getSound("hit").play();
 
+                    // Frog may be moving, if so remove that script to stop him
+                    var script = frog.get(Script);
+                    frog.remove(script);
+
                     // Play death animation and then pause at the end
                     frogKilled.position = 0;
                     frogKilled.onUpdate(0);
