@@ -7,6 +7,7 @@ import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
 import flambe.script.Script;
+import flambe.script.Repeat;
 import flambe.script.Sequence;
 import flambe.script.MoveTo;
 import flambe.script.CallFunction;
@@ -118,18 +119,16 @@ class Main
                     i--;
                 }
             }
-
-            // Checker for collision against frog
-            for(car in cars) {
-                if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
-                    trace('hit');
-                }
-            }
         };
 
-        frog = new Entity();
-        var lib = new Library(pack, "frog");
+        // Setup main update loop
+        var script:Script = new Script();
+        script.run(new Repeat(new CallFunction(update), -1));
+        System.root.add(script);
 
+        frog = new Entity();
+
+        var lib = new Library(pack, "frog");
         var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
         var frogHop:MovieSprite = lib.createMovie("Frog.Hop", true);
         
@@ -208,6 +207,15 @@ class Main
                 }
             }
         });
+    }
+
+    private static function update() {
+        for(car in cars) {
+            if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
+                trace('hit');
+                break;
+            }
+        }
     }
 
     private static function addCar(lane) {
