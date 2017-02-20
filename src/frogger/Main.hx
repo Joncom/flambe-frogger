@@ -6,6 +6,10 @@ import flambe.asset.AssetPack;
 import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
+import flambe.script.Script;
+import flambe.script.Sequence;
+import flambe.script.MoveTo;
+import flambe.script.CallFunction;
 
 import flambe.swf.Library;
 import flambe.swf.MovieSprite;
@@ -176,21 +180,29 @@ class Main
                     }
 
                     // Move
-                    if(moveX != 0) {
-                        frogHop.x.animateTo(frogHop.x._ + moveX, frogHop.symbol.duration);    
-                    }
-                    if(moveY != 0) {
-                        frogHop.y.animateTo(frogHop.y._ + moveY, frogHop.symbol.duration);
-                    }
+                    var script:Script = new Script();
+                    script.run(new Sequence([
+                        new MoveTo(frogHop.x._ + moveX, frogHop.y._ + moveY, frogHop.symbol.duration),
+                        new CallFunction(function(){
+                            // Return to idle state
+                            frogIdle.x._ = frogHop.x._;
+                            frogIdle.y._ = frogHop.y._;
+                            frogIdle.rotation._ = frogHop.rotation._;
+                            frog.remove(frogHop);
+                            frog.add(frogIdle);
+                            frogSprite = frogIdle;
+                        })
+                    ]));
+                    frog.add(script);
 
+                    // Play frog hop animation and then pause once done
+                    frogHop.position = 0;
+                    frogHop.onUpdate(0);
+                    frogHop.paused = false;
                     frogHop.looped.connect(function() {
-                        // Restore idle animation
-                        frogIdle.x._ = frogHop.x._;
-                        frogIdle.y._ = frogHop.y._;
-                        frogIdle.rotation._ = frogHop.rotation._;
-                        frog.remove(frogHop);
-                        frog.add(frogIdle);
-                        frogSprite = frogIdle;
+                        frogHop.position = frogHop.symbol.duration;
+                        frogHop.onUpdate(0);
+                        frogHop.paused = true;
                     }).once();
                 }
             }
