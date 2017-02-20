@@ -17,7 +17,7 @@ import haxe.Timer;
 class Main
 {
     // Constants
-    private static inline var LANE_COUNT:Int = 1;
+    private static inline var LANE_COUNT:Int = 2;
     private static inline var LANE_WIDTH:Int = 14;
     private static inline var TILESIZE:Int = 64;
 
@@ -29,8 +29,9 @@ class Main
 
     private static var carTimer:Timer;
 
-    private static var carNames = ["celica", "civic", "semi", "taxi", "viper"];
-    private static var cars:Array<Entity> = [];
+    private static var cars:Array<Car> = [];
+
+    public static var pack:AssetPack;
 
     private static function main ()
     {
@@ -45,6 +46,8 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        Main.pack = pack;
+
         // Construct road
         road = new Entity();
         for(y in 1...LANE_COUNT+1) {
@@ -71,33 +74,35 @@ class Main
         }
         System.root.addChild(grass);
 
+        // Add one car to each lane
+        for(lane in 0...LANE_COUNT) {
+            addCar(lane);
+        }
+
         // Create and start the game timer
         carTimer = new Timer(16);
         carTimer.run = function() {
             var y = TILESIZE;
 
+            // Spawn new cars
+            for(i in 0...cars.length) {
+                var car = cars[i];
+                if(!car.nextCarSpawned && car.entity.get(ImageSprite).x._ >= car.gap) {
+                    addCar(car.lane);
+                    car.nextCarSpawned = true;
+                }
+            }
+
             // Remove old cars
             if(cars.length > 0) {
                 var i = cars.length - 1;
                 while(i >= 0) {
-                    if(cars[i].get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
-                        System.root.removeChild(cars[i]);
+                    if(cars[i].entity.get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
+                        System.root.removeChild(cars[i].entity);
                         cars.splice(i, 1);
                     }
                     i--;
                 }
-            }
-
-            if(cars.length == 0) {
-                var name = carNames[Math.floor(Math.random() * carNames.length)];
-                var car = new Entity();
-                var sprite = new ImageSprite(pack.getTexture("car-" + name));
-                sprite.x._ = -sprite.getNaturalWidth();
-                sprite.y._ = y;
-                sprite.x.animateTo(LANE_WIDTH * TILESIZE, 1);
-                car.add(sprite);
-                cars.push(car);
-                System.root.addChild(car);
             }
         };
 
@@ -173,5 +178,21 @@ class Main
                 }
             }
         });
+    }
+
+    private static function addCar(lane) {
+        var car = new Car();
+        var sprite = car.entity.get(ImageSprite);
+
+        sprite.x._ = -sprite.getNaturalWidth();
+        sprite.y._ = TILESIZE + TILESIZE * lane;
+        sprite.x.animateTo(LANE_WIDTH * TILESIZE, 1);
+        
+        car.lane = lane;
+        car.gap = 100;
+        car.nextCarSpawned = false;
+        
+        cars.push(car);
+        System.root.addChild(car.entity);
     }
 }
