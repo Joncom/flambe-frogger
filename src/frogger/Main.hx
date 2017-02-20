@@ -38,9 +38,14 @@ class Main
 
     private static var carTimer:Timer;
 
+    private static var baseCarSpeed:Int = 25;
+    private static var laneSpeedFactor:Array<Int> = [4, 3, 6, 2, 5];
+
     private static var cars:Array<Car> = [];
 
     public static var pack:AssetPack;
+
+    private static var lastFrame:Float = 0;
 
     private static function main ()
     {
@@ -55,6 +60,8 @@ class Main
 
     private static function onSuccess (pack :AssetPack)
     {
+        lastFrame = Date.now().getTime();
+
         Main.pack = pack;
 
         // Construct road
@@ -215,6 +222,17 @@ class Main
     }
 
     private static function update() {
+        // Calculate delta since last frame
+        var now = Date.now().getTime();
+        var dt = (now - lastFrame)/1000;
+        lastFrame = now;
+
+        // Move cars
+        for(car in cars) {
+            var speed = baseCarSpeed * laneSpeedFactor[car.lane];
+            car.entity.get(ImageSprite).x._ += speed * dt * (car.direction == 'LEFT' ? -1 : 1);
+        }
+
         // Kill frog when he collides with car
         if(frogSprite != frogKilled) {
             for(car in cars) {
@@ -246,7 +264,6 @@ class Main
         var sprite = car.entity.get(ImageSprite);
 
         sprite.x._ = (lane % 2 == 0 ? -sprite.getNaturalWidth()/2 : LANE_WIDTH * TILESIZE + sprite.getNaturalWidth()/2);
-        sprite.x.animateTo((lane % 2 == 0 ? LANE_WIDTH * TILESIZE + sprite.getNaturalWidth()/2 : -sprite.getNaturalWidth()/2), 16);
         sprite.rotation._ = (lane % 2 == 0 ? 0 : 180);
         sprite.y._ = TILESIZE * 1.5 + TILESIZE * lane;
         
