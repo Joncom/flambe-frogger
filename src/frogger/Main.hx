@@ -87,9 +87,15 @@ class Main
             // Spawn new cars
             for(i in 0...cars.length) {
                 var car = cars[i];
-                if(!car.nextCarSpawned && car.entity.get(ImageSprite).x._ >= car.gap) {
-                    addCar(car.lane);
-                    car.nextCarSpawned = true;
+                if(!car.nextCarSpawned) {
+                    var sprite = car.entity.get(ImageSprite);
+                    if(
+                        (car.direction == 'RIGHT' && sprite.x._ >= car.gap) || 
+                        (car.direction == 'LEFT' && sprite.x._ + sprite.getNaturalWidth() <= LANE_WIDTH * TILESIZE - car.gap)
+                    ) {
+                        addCar(car.lane);
+                        car.nextCarSpawned = true;
+                    }
                 }
             }
 
@@ -97,7 +103,11 @@ class Main
             if(cars.length > 0) {
                 var i = cars.length - 1;
                 while(i >= 0) {
-                    if(cars[i].entity.get(ImageSprite).x._ >= LANE_WIDTH * TILESIZE) {
+                    var sprite = cars[i].entity.get(ImageSprite);
+                    if(
+                        (cars[i].direction == 'RIGHT' && sprite.x._ >= LANE_WIDTH * TILESIZE) ||
+                        (cars[i].direction == 'LEFT' && sprite.x._ <= -sprite.getNaturalWidth())
+                    ) {
                         System.root.removeChild(cars[i].entity);
                         cars.splice(i, 1);
                     }
@@ -184,13 +194,14 @@ class Main
         var car = new Car();
         var sprite = car.entity.get(ImageSprite);
 
-        sprite.x._ = -sprite.getNaturalWidth();
-        sprite.y._ = TILESIZE + TILESIZE * lane;
-        sprite.x.animateTo(LANE_WIDTH * TILESIZE, 4);
+        sprite.x._ = (lane % 2 == 0 ? -sprite.getNaturalWidth() : LANE_WIDTH * TILESIZE);
+        sprite.x.animateTo((lane % 2 == 0 ? LANE_WIDTH * TILESIZE : -sprite.getNaturalWidth()), 4);
+        sprite.rotation._ = (lane % 2 == 0 ? 0 : 180);
+        sprite.y._ = TILESIZE * 1.5 + TILESIZE * lane;
         
         car.lane = lane;
         car.gap = Math.floor(Math.random() * 200 + 100);
-        car.nextCarSpawned = false;
+        car.direction = (lane % 2 == 0 ? 'RIGHT' : 'LEFT');
         
         cars.push(car);
         System.root.addChild(car.entity);
