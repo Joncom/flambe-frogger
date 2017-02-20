@@ -132,6 +132,7 @@ class Main
 
         var frogIdle:MovieSprite = lib.createMovie("Frog.Idle", true);
         var frogHop:MovieSprite = lib.createMovie("Frog.Hop", true);
+        
         for(sprite in [frogIdle, frogHop]) {
             sprite.scaleX._ = 0.5;
             sprite.scaleY._ = 0.5;
