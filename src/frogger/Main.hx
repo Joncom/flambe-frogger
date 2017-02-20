@@ -26,6 +26,7 @@ class Main
 
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
+    private static var frogLastCarTouched:Int;
 
     private static var frogIdle:MovieSprite;
     private static var frogHop:MovieSprite;
@@ -253,6 +254,29 @@ class Main
                         frogKilled.paused = true;
                     }).once();
                     break;
+                }
+            }
+        }
+
+        // Let cars continue to trample frog
+        if(frogSprite == frogKilled) {
+            for(car in cars) {
+                if(car.entity.get(ImageSprite).contains(frogSprite.x._, frogSprite.y._)) {
+                    if(frogLastCarTouched != car.id) {
+                        frogLastCarTouched = car.id;
+                        pack.getSound("hit").play();
+
+                        // Play death animation and then pause at the end
+                        frogKilled.position = 0;
+                        frogKilled.onUpdate(0);
+                        frogKilled.paused = false;
+                        frogKilled.looped.connect(function() {
+                            frogKilled.position = frogKilled.symbol.duration;
+                            frogKilled.onUpdate(0);
+                            frogKilled.paused = true;
+                        }).once();
+                        break;
+                    }
                 }
             }
         }

@@ -6,9 +6,11 @@ import flambe.display.ImageSprite;
 class Car
 {
     private static var carNames = ["celica", "civic", "semi", "taxi", "viper"];
+    private static var idCounter:Int = 0;
 
     public var entity:Entity;
 
+    public var id:Int;
     public var gap:Int;
     public var lane:Int;
     public var nextCarSpawned:Bool;
@@ -16,6 +18,8 @@ class Car
 
     public function new()
     {
+        this.id = idCounter++;
+
         var name = carNames[Math.floor(Math.random() * carNames.length)];
         var sprite = new ImageSprite(Main.pack.getTexture("car-" + name));
         sprite.centerAnchor();
