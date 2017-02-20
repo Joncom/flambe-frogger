@@ -207,6 +207,8 @@ class Main
                     ]));
                     frog.add(script);
 
+                    pack.getSound("jump").play();
+
                     // Play frog hop animation and then pause once done
                     frogHop.position = 0;
                     frogHop.onUpdate(0);
