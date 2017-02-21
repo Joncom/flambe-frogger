@@ -29,6 +29,15 @@ class Main
     private static var score:Int;
     private static var font:Font;
 
+    private static var STATE_UP:Bool = false;
+    private static var STATE_DOWN:Bool = false;
+    private static var STATE_LEFT:Bool = false;
+    private static var STATE_RIGHT:Bool = false;
+    private static var PRESSED_UP:Bool = false;
+    private static var PRESSED_DOWN:Bool = false;
+    private static var PRESSED_LEFT:Bool = false;
+    private static var PRESSED_RIGHT:Bool = false;
+
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
     private static var frogLastCarTouched:Int;
@@ -141,71 +150,17 @@ class Main
         System.root.addChild(frog);
 
         System.keyboard.down.connect(function(event:KeyboardEvent) {
-            if(frogSprite != frogIdle) { return; }
+            PRESSED_UP = STATE_UP = event.key == Key.Up;
+            PRESSED_DOWN = STATE_DOWN = event.key == Key.Down;
+            PRESSED_LEFT = STATE_LEFT = event.key == Key.Left;
+            PRESSED_RIGHT = STATE_RIGHT = event.key == Key.Right;
+        });
 
-            var moveX = 0;
-            var moveY = 0;
-            var minX = TILESIZE/2;
-            var minY = TILESIZE/2;
-            var maxX = TILESIZE/2 + (LANE_WIDTH - 1) * TILESIZE;
-            var maxY = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
-            if(event.key == Key.Down && frogSprite.y._ < maxY) {
-                moveY = TILESIZE;
-            } else if(event.key == Key.Up && frogSprite.y._ > minY) {
-                moveY = -TILESIZE;
-            } else if(event.key == Key.Left && frogSprite.x._ > minX) {
-                moveX = -TILESIZE;
-            } else if(event.key == Key.Right && frogSprite.x._ < maxX) {
-                moveX = TILESIZE;
-            }
-            if(moveX == 0 && moveY == 0) { return; }
-
-            // Swap in new animation
-            frogHop.x._ = frogIdle.x._;
-            frogHop.y._ = frogIdle.y._;
-            frogHop.rotation._ = frogIdle.rotation._;
-            frog.remove(frogIdle);
-            frog.add(frogHop);
-            frogSprite = frogHop;
-
-            // Set rotation
-            if(moveX > 0) {
-                frogSprite.rotation._ = 90;
-            } else if(moveX < 0) {
-                frogSprite.rotation._ = -90;
-            } else if(moveY > 0) {
-                frogSprite.rotation._ = 180;
-            } else if(moveY < 0) {
-                frogSprite.rotation._ = 0;
-            }
-
-            // Move
-            var script:Script = new Script();
-            script.run(new Sequence([
-                new MoveTo(frogHop.x._ + moveX, frogHop.y._ + moveY, frogHop.symbol.duration),
-                new CallFunction(function(){
-                    // Return to idle state
-                    frogIdle.x._ = frogHop.x._;
-                    frogIdle.y._ = frogHop.y._;
-                    frogIdle.rotation._ = frogHop.rotation._;
-                    frog.remove(frogHop);
-                    frog.add(frogIdle);
-                    frogSprite = frogIdle;
-                })
-            ]));
-            frog.add(script);
-
-            pack.getSound("jump").play();
-
-            // Play frog hop animation and then pause once done
-            frogHop.position = 0;
-            frogHop.onUpdate(0);
-            frogHop.paused = false;
-            frogHop.looped.connect(function() {
-                frogHop.position = frogHop.symbol.duration;
-                frogHop.onUpdate(0);
-                frogHop.paused = true;
-            }).once();
+        System.keyboard.up.connect(function(event:KeyboardEvent) {
+            STATE_UP = !(event.key == Key.Up);
+            STATE_DOWN = !(event.key == Key.Down);
+            STATE_LEFT = !(event.key == Key.Left);
+            STATE_RIGHT = !(event.key == Key.Right);
         });
 
         // Add one car to each lane
@@ -323,6 +278,73 @@ class Main
             }
         }
 
+        // Handle frog jumping
+        if(frogSprite == frogIdle) {
+            var moveX = 0;
+            var moveY = 0;
+            var minX = TILESIZE/2;
+            var minY = TILESIZE/2;
+            var maxX = TILESIZE/2 + (LANE_WIDTH - 1) * TILESIZE;
+            var maxY = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
+            if(PRESSED_DOWN && frogSprite.y._ < maxY) {
+                moveY = TILESIZE;
+            } else if(PRESSED_UP && frogSprite.y._ > minY) {
+                moveY = -TILESIZE;
+            } else if(PRESSED_LEFT && frogSprite.x._ > minX) {
+                moveX = -TILESIZE;
+            } else if(PRESSED_RIGHT && frogSprite.x._ < maxX) {
+                moveX = TILESIZE;
+            }
+            if(moveX != 0 || moveY != 0) {
+                // Swap in new animation
+                frogHop.x._ = frogIdle.x._;
+                frogHop.y._ = frogIdle.y._;
+                frogHop.rotation._ = frogIdle.rotation._;
+                frog.remove(frogIdle);
+                frog.add(frogHop);
+                frogSprite = frogHop;
+
+                // Set rotation
+                if(moveX > 0) {
+                    frogSprite.rotation._ = 90;
+                } else if(moveX < 0) {
+                    frogSprite.rotation._ = -90;
+                } else if(moveY > 0) {
+                    frogSprite.rotation._ = 180;
+                } else if(moveY < 0) {
+                    frogSprite.rotation._ = 0;
+                }
+
+                // Move
+                var script:Script = new Script();
+                script.run(new Sequence([
+                    new MoveTo(frogHop.x._ + moveX, frogHop.y._ + moveY, frogHop.symbol.duration),
+                    new CallFunction(function(){
+                        // Return to idle state
+                        frogIdle.x._ = frogHop.x._;
+                        frogIdle.y._ = frogHop.y._;
+                        frogIdle.rotation._ = frogHop.rotation._;
+                        frog.remove(frogHop);
+                        frog.add(frogIdle);
+                        frogSprite = frogIdle;
+                    })
+                ]));
+                frog.add(script);
+
+                pack.getSound("jump").play();
+
+                // Play frog hop animation and then pause once done
+                frogHop.position = 0;
+                frogHop.onUpdate(0);
+                frogHop.paused = false;
+                frogHop.looped.connect(function() {
+                    frogHop.position = frogHop.symbol.duration;
+                    frogHop.onUpdate(0);
+                    frogHop.paused = true;
+                }).once();
+            }
+        }
+
         // Award point for touching grass
         if(frogSprite != frogKilled) {
             for(grassHitbox in [topGrassHitbox, bottomGrassHitbox]) {
@@ -344,6 +366,12 @@ class Main
                 }
             }
         }
+
+        // Clear presses
+        PRESSED_UP = false;
+        PRESSED_DOWN = false;
+        PRESSED_LEFT = false;
+        PRESSED_RIGHT = false;
     }
 
     private static function addCar(lane) {
