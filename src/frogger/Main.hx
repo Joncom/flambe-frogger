@@ -198,7 +198,7 @@ class Main
         // Setup grass hitboxes for registering points
         topGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
         bottomGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
-        bottomGrassHitbox.get(FillSprite).y._ = LANE_COUNT * TILESIZE;
+        bottomGrassHitbox.get(FillSprite).y._ = (LANE_COUNT + 1) * TILESIZE;
 
         scoreText = new TextSprite(font, "" + score);
         System.root.addChild(new Entity().add(scoreText));
