@@ -108,6 +108,12 @@ class Main
         script.run(new Repeat(new CallFunction(update), -1));
         System.root.add(script);
 
+        scoreText = new TextSprite(font, "" + score);
+        scoreText.centerAnchor();
+        scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
+        scoreText.y._ = TILESIZE / 2;
+        System.root.addChild(new Entity().add(scoreText));
+
         gameOverText = new TextSprite(font, "GAME OVER");
         gameOverText.centerAnchor();
         gameOverText.x._ = (LANE_WIDTH * TILESIZE) / 2;
@@ -209,11 +215,6 @@ class Main
         topGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
         bottomGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
         bottomGrassHitbox.get(FillSprite).y._ = (LANE_COUNT + 1) * TILESIZE;
-
-        scoreText = new TextSprite(font, "" + score);
-        scoreText.align = TextAlign.Center;
-        scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
-        System.root.addChild(new Entity().add(scoreText));
     }
 
     private static function update() {
@@ -325,10 +326,12 @@ class Main
                         frogLastGrassHitboxTouched = grassHitbox;
                         score++;
                         scoreText.text = "" + score;
-                        scoreText.scaleX._ = 2;
-                        scoreText.scaleY._ = 2;
+                        scoreText.scaleX._ = 0;
+                        scoreText.scaleY._ = 0;
+                        scoreText.alpha._ = 0;
                         scoreText.scaleX.animateTo(1, 0.25);
                         scoreText.scaleY.animateTo(1, 0.25);
+                        scoreText.alpha.animateTo(1, 0.25);
                         pack.getSound("achieve").play();
                         carSpeed += 6;
                         trace('point');
