@@ -108,6 +108,13 @@ class Main
         script.run(new Repeat(new CallFunction(update), -1));
         System.root.add(script);
 
+        gameOverText = new TextSprite(font, "GAME OVER");
+        gameOverText.centerAnchor();
+        gameOverText.x._ = (LANE_WIDTH * TILESIZE) / 2;
+        gameOverText.y._ = ((LANE_COUNT + 2) * TILESIZE) / 2;
+        gameOverText.alpha._ = 0;
+        System.root.addChild(new Entity().add(gameOverText));
+
         frog = new Entity();
 
         var lib = new Library(pack, "frog");
@@ -207,12 +214,6 @@ class Main
         scoreText.align = TextAlign.Center;
         scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
         System.root.addChild(new Entity().add(scoreText));
-
-        gameOverText = new TextSprite(font, "GAME OVER");
-        gameOverText.centerAnchor();
-        gameOverText.x._ = (LANE_WIDTH * TILESIZE) / 2;
-        gameOverText.y._ = ((LANE_COUNT + 2) * TILESIZE) / 2;
-        System.root.addChild(new Entity().add(gameOverText));
     }
 
     private static function update() {
@@ -275,6 +276,9 @@ class Main
                     // Frog may be moving, if so remove that script to stop him
                     var script = frog.get(Script);
                     frog.remove(script);
+
+                    // Show game over text
+                    gameOverText.alpha.animateTo(1, 0.125);
 
                     // Play death animation and then pause at the end
                     frogKilled.position = 0;
