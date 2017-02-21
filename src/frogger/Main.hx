@@ -300,6 +300,7 @@ class Main
                     if(frogLastGrassHitboxTouched != grassHitbox) {
                         frogLastGrassHitboxTouched = grassHitbox;
                         score++;
+                        pack.getSound("achieve").play();
                         trace('point');
                     }
                 }
