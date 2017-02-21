@@ -201,6 +201,8 @@ class Main
         bottomGrassHitbox.get(FillSprite).y._ = (LANE_COUNT + 1) * TILESIZE;
 
         scoreText = new TextSprite(font, "" + score);
+        scoreText.align = TextAlign.Center;
+        scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
         System.root.addChild(new Entity().add(scoreText));
     }
 
@@ -310,6 +312,10 @@ class Main
                         frogLastGrassHitboxTouched = grassHitbox;
                         score++;
                         scoreText.text = "" + score;
+                        scoreText.scaleX._ = 2;
+                        scoreText.scaleY._ = 2;
+                        scoreText.scaleX.animateTo(1, 0.25);
+                        scoreText.scaleY.animateTo(1, 0.25);
                         pack.getSound("achieve").play();
                         trace('point');
                     }
