@@ -145,13 +145,17 @@ class Main
 
             var moveX = 0;
             var moveY = 0;
-            if(event.key == Key.Down) {
+            var minX = TILESIZE/2;
+            var minY = TILESIZE/2;
+            var maxX = TILESIZE/2 + (LANE_WIDTH - 1) * TILESIZE;
+            var maxY = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
+            if(event.key == Key.Down && frogSprite.y._ < maxY) {
                 moveY = TILESIZE;
-            } else if(event.key == Key.Up) {
+            } else if(event.key == Key.Up && frogSprite.y._ > minY) {
                 moveY = -TILESIZE;
-            } else if(event.key == Key.Left) {
+            } else if(event.key == Key.Left && frogSprite.x._ > minX) {
                 moveX = -TILESIZE;
-            } else if(event.key == Key.Right) {
+            } else if(event.key == Key.Right && frogSprite.x._ < maxX) {
                 moveX = TILESIZE;
             }
             if(moveX == 0 && moveY == 0) { return; }
