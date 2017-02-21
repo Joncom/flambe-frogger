@@ -24,9 +24,12 @@ class Main
     private static inline var LANE_WIDTH:Int = 14;
     private static inline var TILESIZE:Int = 64;
 
+    private static var score:Int;
+
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
     private static var frogLastCarTouched:Int;
+    private static var frogLastGrassHitboxTouched:Entity;
 
     private static var frogIdle:MovieSprite;
     private static var frogHop:MovieSprite;
@@ -34,6 +37,9 @@ class Main
 
     private static var road:Entity;
     private static var grass:Entity;
+
+    private static var topGrassHitbox:Entity;
+    private static var bottomGrassHitbox:Entity;
 
     private static var baseCarSpeed:Int = 25;
     private static var laneSpeedFactor:Array<Int> = [4, 3, 6, 2, 5];
@@ -181,6 +187,12 @@ class Main
         for(lane in 0...LANE_COUNT) {
             addCar(lane);
         }
+
+        // Setup grass hitboxes for registering points
+        topGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
+        bottomGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
+        bottomGrassHitbox.get(FillSprite).y._ = LANE_COUNT * TILESIZE;
+
     }
 
     private static function update() {
@@ -276,6 +288,19 @@ class Main
                             frogKilled.paused = true;
                         }).once();
                         break;
+                    }
+                }
+            }
+        }
+
+        // Award point for touching grass
+        if(frogSprite != frogKilled) {
+            for(grassHitbox in [topGrassHitbox, bottomGrassHitbox]) {
+                if(grassHitbox.get(FillSprite).contains(frogSprite.x._, frogSprite.y._)) {
+                    if(frogLastGrassHitboxTouched != grassHitbox) {
+                        frogLastGrassHitboxTouched = grassHitbox;
+                        score++;
+                        trace('point');
                     }
                 }
             }
