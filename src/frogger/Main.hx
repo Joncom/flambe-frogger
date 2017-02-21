@@ -42,6 +42,9 @@ class Main
     private static var frogSprite:MovieSprite;
     private static var frogLastCarTouched:Int;
     private static var frogLastGrassHitboxTouched:Entity;
+    private static var frogKilledAt:Float;
+    private static var frogDefaultX:Float;
+    private static var frogDefaultY:Float;
 
     private static var frogIdle:MovieSprite;
     private static var frogHop:MovieSprite;
@@ -142,9 +145,12 @@ class Main
             sprite.scaleY._ = 0.5;
         }
 
+        frogDefaultX = TILESIZE/2 + Math.floor(LANE_WIDTH / 2) * TILESIZE;
+        frogDefaultY = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
+
         frogSprite = frogIdle;
-        frogSprite.x._ = TILESIZE/2 + Math.floor(LANE_WIDTH / 2) * TILESIZE;
-        frogSprite.y._ = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
+        frogSprite.x._ = frogDefaultX;
+        frogSprite.y._ = frogDefaultY;
 
         frog.add(frogSprite);
         System.root.addChild(frog);
@@ -240,6 +246,8 @@ class Main
 
                     // Show game over text
                     gameOverText.alpha.animateTo(1, 0.125);
+
+                    frogKilledAt = now;
 
                     // Play death animation and then pause at the end
                     frogKilled.position = 0;
@@ -364,6 +372,24 @@ class Main
                         trace('point');
                     }
                 }
+            }
+        }
+
+        // Handle respawn
+        if(frogSprite == frogKilled && now - frogKilledAt > 1000) {
+            if(PRESSED_UP || PRESSED_DOWN || PRESSED_LEFT || PRESSED_RIGHT) {
+                // Return to default state
+                frogIdle.x._ = frogDefaultX;
+                frogIdle.y._ = frogDefaultY;
+                frogIdle.rotation._ = frogKilled.rotation._;
+                frog.remove(frogKilled);
+                frog.add(frogIdle);
+                frogSprite = frogIdle;
+                gameOverText.alpha._ = 0;
+                score = 0;
+                scoreText.text = "" + score;
+                carSpeed = defaultCarSpeed;
+                frogLastGrassHitboxTouched = bottomGrassHitbox; // prevent free point
             }
         }
 
