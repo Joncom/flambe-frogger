@@ -23,7 +23,7 @@ class Main
 {
     // Constants
     private static inline var LANE_COUNT:Int = 5;
-    private static inline var LANE_WIDTH:Int = 14;
+    private static inline var LANE_WIDTH:Int = 13;
     private static inline var TILESIZE:Int = 64;
 
     private static var score:Int;
@@ -118,8 +118,8 @@ class Main
         }
 
         frogSprite = frogIdle;
-        frogSprite.x._ = 32;
-        frogSprite.y._ = 32;
+        frogSprite.x._ = TILESIZE/2 + Math.floor(LANE_WIDTH / 2) * TILESIZE;
+        frogSprite.y._ = TILESIZE/2 + (LANE_COUNT + 1) * TILESIZE;
 
         frog.add(frogSprite);
         System.root.addChild(frog);
