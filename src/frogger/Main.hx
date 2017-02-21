@@ -55,6 +55,7 @@ class Main
     private static var lastFrame:Float = 0;
 
     private static var scoreText:TextSprite;
+    private static var gameOverText:TextSprite;
 
     private static function main ()
     {
@@ -206,6 +207,12 @@ class Main
         scoreText.align = TextAlign.Center;
         scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
         System.root.addChild(new Entity().add(scoreText));
+
+        gameOverText = new TextSprite(font, "GAME OVER");
+        gameOverText.centerAnchor();
+        gameOverText.x._ = (LANE_WIDTH * TILESIZE) / 2;
+        gameOverText.y._ = ((LANE_COUNT + 2) * TILESIZE) / 2;
+        System.root.addChild(new Entity().add(gameOverText));
     }
 
     private static function update() {
