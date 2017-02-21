@@ -22,7 +22,7 @@ import flambe.input.Key;
 class Main
 {
     // Constants
-    private static inline var LANE_COUNT:Int = 5;
+    private static inline var LANE_COUNT:Int = 4;
     private static inline var LANE_WIDTH:Int = 13;
     private static inline var TILESIZE:Int = 64;
 
@@ -111,13 +111,13 @@ class Main
         scoreText = new TextSprite(font, "" + score);
         scoreText.centerAnchor();
         scoreText.x._ = (LANE_WIDTH * TILESIZE) / 2;
-        scoreText.y._ = TILESIZE / 2;
+        scoreText.y._ = TILESIZE / 2 + TILESIZE * 2;
         System.root.addChild(new Entity().add(scoreText));
 
         gameOverText = new TextSprite(font, "GAME OVER");
         gameOverText.centerAnchor();
         gameOverText.x._ = (LANE_WIDTH * TILESIZE) / 2;
-        gameOverText.y._ = ((LANE_COUNT + 2) * TILESIZE) / 2;
+        gameOverText.y._ = TILESIZE / 2 + TILESIZE * 3;
         gameOverText.alpha._ = 0;
         System.root.addChild(new Entity().add(gameOverText));
 
