@@ -6,6 +6,8 @@ import flambe.asset.AssetPack;
 import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
+import flambe.display.TextSprite;
+import flambe.display.Font;
 import flambe.script.Script;
 import flambe.script.Repeat;
 import flambe.script.Sequence;
@@ -25,6 +27,7 @@ class Main
     private static inline var TILESIZE:Int = 64;
 
     private static var score:Int;
+    private static var font:Font;
 
     private static var frog:Entity;
     private static var frogSprite:MovieSprite;
@@ -50,6 +53,8 @@ class Main
 
     private static var lastFrame:Float = 0;
 
+    private static var scoreText:TextSprite;
+
     private static function main ()
     {
         // Wind up all platform-specific stuff
@@ -64,6 +69,8 @@ class Main
     private static function onSuccess (pack :AssetPack)
     {
         lastFrame = Date.now().getTime();
+        font = new Font(pack, "font");
+        score = 0;
 
         Main.pack = pack;
 
@@ -193,6 +200,8 @@ class Main
         bottomGrassHitbox = new Entity().add(new FillSprite(0x000000, LANE_WIDTH * TILESIZE, TILESIZE));
         bottomGrassHitbox.get(FillSprite).y._ = LANE_COUNT * TILESIZE;
 
+        scoreText = new TextSprite(font, "" + score);
+        System.root.addChild(new Entity().add(scoreText));
     }
 
     private static function update() {
@@ -300,6 +309,7 @@ class Main
                     if(frogLastGrassHitboxTouched != grassHitbox) {
                         frogLastGrassHitboxTouched = grassHitbox;
                         score++;
+                        scoreText.text = "" + score;
                         pack.getSound("achieve").play();
                         trace('point');
                     }
