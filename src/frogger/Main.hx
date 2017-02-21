@@ -141,7 +141,7 @@ class Main
         System.root.addChild(frog);
 
         System.keyboard.down.connect(function(event:KeyboardEvent) {
-            if(frogSprite != frogIdle) { return }
+            if(frogSprite != frogIdle) { return; }
 
             var moveX = 0;
             var moveY = 0;
