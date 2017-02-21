@@ -44,7 +44,8 @@ class Main
     private static var topGrassHitbox:Entity;
     private static var bottomGrassHitbox:Entity;
 
-    private static var baseCarSpeed:Int = 25;
+    private static var defaultCarSpeed:Int = 25;
+    private static var carSpeed:Int;
     private static var laneSpeedFactor:Array<Int> = [4, 3, 6, 2, 5];
 
     private static var cars:Array<Car> = [];
@@ -71,6 +72,7 @@ class Main
         lastFrame = Date.now().getTime();
         font = new Font(pack, "font");
         score = 0;
+        carSpeed = defaultCarSpeed;
 
         Main.pack = pack;
 
@@ -246,7 +248,7 @@ class Main
 
         // Move cars
         for(car in cars) {
-            var speed = baseCarSpeed * laneSpeedFactor[car.lane];
+            var speed = carSpeed * laneSpeedFactor[car.lane];
             car.entity.get(ImageSprite).x._ += speed * dt * (car.direction == 'LEFT' ? -1 : 1);
         }
 
@@ -317,6 +319,7 @@ class Main
                         scoreText.scaleX.animateTo(1, 0.25);
                         scoreText.scaleY.animateTo(1, 0.25);
                         pack.getSound("achieve").play();
+                        carSpeed += 6;
                         trace('point');
                     }
                 }
