@@ -141,6 +141,8 @@ class Main
         System.root.addChild(frog);
 
         System.keyboard.down.connect(function(event:KeyboardEvent) {
+            if(frogSprite != frogIdle) { return }
+
             var moveX = 0;
             var moveY = 0;
             if(event.key == Key.Down) {
@@ -152,58 +154,54 @@ class Main
             } else if(event.key == Key.Right) {
                 moveX = TILESIZE;
             }
-            // Can move?
-            if(frogSprite == frogIdle) {
-                // Trying to move?
-                if(moveX != 0 || moveY != 0) {
-                    // Swap in new animation
-                    frogHop.x._ = frogIdle.x._;
-                    frogHop.y._ = frogIdle.y._;
-                    frogHop.rotation._ = frogIdle.rotation._;
-                    frog.remove(frogIdle);
-                    frog.add(frogHop);
-                    frogSprite = frogHop;
+            if(moveX == 0 && moveY == 0) { return; }
 
-                    // Set rotation
-                    if(moveX > 0) {
-                        frogSprite.rotation._ = 90;
-                    } else if(moveX < 0) {
-                        frogSprite.rotation._ = -90;
-                    } else if(moveY > 0) {
-                        frogSprite.rotation._ = 180;
-                    } else if(moveY < 0) {
-                        frogSprite.rotation._ = 0;
-                    }
+            // Swap in new animation
+            frogHop.x._ = frogIdle.x._;
+            frogHop.y._ = frogIdle.y._;
+            frogHop.rotation._ = frogIdle.rotation._;
+            frog.remove(frogIdle);
+            frog.add(frogHop);
+            frogSprite = frogHop;
 
-                    // Move
-                    var script:Script = new Script();
-                    script.run(new Sequence([
-                        new MoveTo(frogHop.x._ + moveX, frogHop.y._ + moveY, frogHop.symbol.duration),
-                        new CallFunction(function(){
-                            // Return to idle state
-                            frogIdle.x._ = frogHop.x._;
-                            frogIdle.y._ = frogHop.y._;
-                            frogIdle.rotation._ = frogHop.rotation._;
-                            frog.remove(frogHop);
-                            frog.add(frogIdle);
-                            frogSprite = frogIdle;
-                        })
-                    ]));
-                    frog.add(script);
-
-                    pack.getSound("jump").play();
-
-                    // Play frog hop animation and then pause once done
-                    frogHop.position = 0;
-                    frogHop.onUpdate(0);
-                    frogHop.paused = false;
-                    frogHop.looped.connect(function() {
-                        frogHop.position = frogHop.symbol.duration;
-                        frogHop.onUpdate(0);
-                        frogHop.paused = true;
-                    }).once();
-                }
+            // Set rotation
+            if(moveX > 0) {
+                frogSprite.rotation._ = 90;
+            } else if(moveX < 0) {
+                frogSprite.rotation._ = -90;
+            } else if(moveY > 0) {
+                frogSprite.rotation._ = 180;
+            } else if(moveY < 0) {
+                frogSprite.rotation._ = 0;
             }
+
+            // Move
+            var script:Script = new Script();
+            script.run(new Sequence([
+                new MoveTo(frogHop.x._ + moveX, frogHop.y._ + moveY, frogHop.symbol.duration),
+                new CallFunction(function(){
+                    // Return to idle state
+                    frogIdle.x._ = frogHop.x._;
+                    frogIdle.y._ = frogHop.y._;
+                    frogIdle.rotation._ = frogHop.rotation._;
+                    frog.remove(frogHop);
+                    frog.add(frogIdle);
+                    frogSprite = frogIdle;
+                })
+            ]));
+            frog.add(script);
+
+            pack.getSound("jump").play();
+
+            // Play frog hop animation and then pause once done
+            frogHop.position = 0;
+            frogHop.onUpdate(0);
+            frogHop.paused = false;
+            frogHop.looped.connect(function() {
+                frogHop.position = frogHop.symbol.duration;
+                frogHop.onUpdate(0);
+                frogHop.paused = true;
+            }).once();
         });
 
         // Add one car to each lane
